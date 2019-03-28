@@ -16,6 +16,8 @@
         <meta property="og:url" content=" ">
         <meta name="twitter:card" content="summary_large_image">
 
+        <link href="https://fonts.googleapis.com/css?family=Roboto|Jacques+Francois+Shadow" rel="stylesheet">
+
         <link href="./css/style.css" rel="stylesheet" />
     </head>
 
@@ -23,18 +25,22 @@
 
         <header>
             <h1>Shades of the world</h1>
-            <h2 class="subtitle"></h2>
+            <h2></h2>
         </header>
 
         <main>
 
-            <input type="text" class="search-input" placeholder="search">
+            <div class="input-wrapper">
+                <input type="text" class="search-input" placeholder="search">
         
-            <div class="buttons">
-                <button class="button-name">Sort by name</button>
-                <button class="button-capital">Sort by capital</button>
-                <button class="button-population">Sort by population</button>
+                <div class="buttons-div">
+                    <button class="button-name">Sort by name</button>
+                    <button class="button-capital">Sort by capital</button>
+                    <button class="button-population">Sort by population</button>
+                </div>
             </div>
+
+            <p class="country-count"></p>
     
             <div class="countries-wrapper"></div>
 
