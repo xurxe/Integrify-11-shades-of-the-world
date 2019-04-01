@@ -7,9 +7,11 @@ const searchInput = document.querySelector('.search-input');
 
 const buttonsDiv = document.querySelector('.buttons-div');
 const buttons = document.querySelectorAll('button');
-const searchByName = document.querySelector('#search-by-name');
-const searchByCapital = document.querySelector('#search-by-capital');
-const searchByPopulation = document.querySelector('#search-by-population');
+const searchByName = document.querySelector('#name');
+const searchByCapital = document.querySelector('#capital');
+const searchByPopulation = document.querySelector('#population');
+let selectedButton = document.querySelector('.selected');
+console.log(selectedButton.id);
 
 const countryCount = document.querySelector('.country-count');
 
@@ -31,6 +33,9 @@ let darkHSL = `hsl(${H}, ${S}%, ${darkL}%)`
 let byName = 1;
 let byCapital = 0;
 let byPopulation = 0;
+
+let sortMode = selectedButton.id;
+let shownCountries;
 
 
 
@@ -160,54 +165,49 @@ function changeSortMode(event) {
 
     event.target.className = 'selected';
 
-    const selectedButton = document.querySelector('.selected');
+    selectedButton = document.querySelector('.selected');
     console.log(selectedButton.id, selectedButton.className);
     selectedButton.style.outline = `2px solid ${mediumHSL}`;
 
-    if (selectedButton.id === 'sort-by-name') {
-        console.log('test');
-        byCapital = 0;
-        byPopulation = 0;
+    if (selectedButton.id[0] === '-') {
+        selectedButton.id = selectedButton.id.substr(1);
+    }
 
-        if (byName === 0) {
-            byName = 1;
-        }
+    else {
+        selectedButton.id = '-' + selectedButton.id;
+    }
 
-        else {
-            byName = -byName;
-        }
-    };
-
-    if (selectedButton.id === 'sort-by-capital') {
-        byName = 0;
-        byPopulation = 0;
-
-        if (byCapital === 0) {
-            byCapital = 1;
-        }
-
-        else {
-            byCapital = -byCapital;
-        }
-    };
-
-    if (selectedButton.id === 'sort-by-population') {
-        byName = 0;
-        byCapital = 0;
-
-        if (byPopulation === 0) {
-            byPopulation = -1;
-        }
-
-        else {
-            byPopulation = -byPopulation;
-        }
-    };
-
-    sortArray = [byName, byCapital, byPopulation];
-
-    return sortArray;
+    sortMode = selectedButton.id;
 };
+
+
+
+function sortCountries(array, property) {
+/*     property = `'${sortMode}'`;
+ */    let sortOrder = 1;
+
+    function compare(a, b) {
+        if (a[property] < b[property]) {
+            return -1;
+        }
+    };
+
+    if (property[0] === '-') {
+        sortOrder = -1;
+        property = property.substr(1);
+    }
+
+    array.sort(compare);
+
+    if (sortOrder === -1) {
+        array.reverse();
+    }
+
+    console.log(property);
+    return array;
+};
+
+sortCountries(countries, 'capital');
 
 
 
@@ -215,6 +215,7 @@ function showFilteredCountries(event) {
     countriesWrapper.innerHTML = '';
     let searchTerm = event.target.value.toLowerCase();
     shownCountries = showCountries(filterCountries(countries, searchTerm));
+    return shownCountries;
 };
 
 
