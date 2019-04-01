@@ -1,28 +1,38 @@
-/* GLOBAL VARIABLES ******************************************************** */
+/* QUERY SELECTORS ************************************************** */
+const h1 = document.querySelector('h1');
 
-const countriesWrapper = document.querySelector('.countries-wrapper');
-
-const countryCount = document.querySelector('.country-count');
+const link = document.querySelector('a');
 
 const searchInput = document.querySelector('.search-input');
 
 const buttonsDiv = document.querySelector('.buttons-div');
+const buttons = document.querySelectorAll('button');
+const searchByName = document.querySelector('#search-by-name');
+const searchByCapital = document.querySelector('#search-by-capital');
+const searchByPopulation = document.querySelector('#search-by-population');
 
-const h1 = document.querySelector('h1');
+const countryCount = document.querySelector('.country-count');
 
-const a = document.querySelector('a');
+const countriesWrapper = document.querySelector('.countries-wrapper');
 
-let alphaByName = true;
-let alphaByCapital = false;
-let descendingByPopulation = false;
+
+
+/* VARIABLES ******************************************************** */
 
 let H = Math.round(Math.random() * 360);
 let S = Math.round(Math.random() * 100);
+
 let mediumL = 25;
 let mediumHSL = `hsl(${H}, ${S}%, ${mediumL}%)`
 
 let darkL = 5;
 let darkHSL = `hsl(${H}, ${S}%, ${darkL}%)`
+
+let byName = 1;
+let byCapital = 0;
+let byPopulation = 0;
+
+
 
 /* STYLES ***************************************************************** */
 searchInput.style.background = mediumHSL;
@@ -44,7 +54,6 @@ searchInput.addEventListener('blur', function() {
     searchInput.style.background = mediumHSL;
 });
 
-const buttons = document.querySelectorAll('button')
 for (let i = 0; i < buttons.length; i++) {
     buttons[i].style.padding = '1rem';
     buttons[i].style.margin = '1rem 0';
@@ -128,14 +137,6 @@ function showCountries(array) {
 
 
 
-function changeSearchMode(event) {
-    console.log(event);
-    console.log(event.target);
-    console.log(event.target.className);
-};
-
-
-
 function filterCountries(array, search) {
     const filteredCountries = array.filter(country => {
         let {name, capital, languages} = country;
@@ -151,6 +152,65 @@ function filterCountries(array, search) {
 
 
 
+function changeSortMode(event) {
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].className = '';
+        buttons[i].style.outline = 'none';
+    };
+
+    event.target.className = 'selected';
+
+    const selectedButton = document.querySelector('.selected');
+    console.log(selectedButton.id, selectedButton.className);
+    selectedButton.style.outline = `2px solid ${mediumHSL}`;
+
+    if (selectedButton.id === 'sort-by-name') {
+        console.log('test');
+        byCapital = 0;
+        byPopulation = 0;
+
+        if (byName === 0) {
+            byName = 1;
+        }
+
+        else {
+            byName = -byName;
+        }
+    };
+
+    if (selectedButton.id === 'sort-by-capital') {
+        byName = 0;
+        byPopulation = 0;
+
+        if (byCapital === 0) {
+            byCapital = 1;
+        }
+
+        else {
+            byCapital = -byCapital;
+        }
+    };
+
+    if (selectedButton.id === 'sort-by-population') {
+        byName = 0;
+        byCapital = 0;
+
+        if (byPopulation === 0) {
+            byPopulation = -1;
+        }
+
+        else {
+            byPopulation = -byPopulation;
+        }
+    };
+
+    sortArray = [byName, byCapital, byPopulation];
+
+    return sortArray;
+};
+
+
+
 function showFilteredCountries(event) {
     countriesWrapper.innerHTML = '';
     let searchTerm = event.target.value.toLowerCase();
@@ -162,11 +222,11 @@ function showFilteredCountries(event) {
 /* EXECUTION *************************************************************** */
 
 h1.style.color = mediumHSL;
-a.style.color = mediumHSL;
+link.style.color = mediumHSL;
 
 countryCount.textContent = `showing ${countries.length} countries`;
 showCountries(countries);
 
-buttonsDiv.addEventListener('click', changeSearchMode);
+buttonsDiv.addEventListener('click', changeSortMode);
 
 searchInput.addEventListener('input', showFilteredCountries);
