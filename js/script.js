@@ -11,7 +11,6 @@ const searchByName = document.querySelector('#name');
 const searchByCapital = document.querySelector('#capital');
 const searchByPopulation = document.querySelector('#population');
 let selectedButton = document.querySelector('.selected');
-console.log(selectedButton.id);
 
 const countryCount = document.querySelector('.country-count');
 
@@ -30,9 +29,6 @@ let mediumHSL = `hsl(${H}, ${S}%, ${mediumL}%)`
 let darkL = 5;
 let darkHSL = `hsl(${H}, ${S}%, ${darkL}%)`
 
-let sortMode = selectedButton.id;
-let property = sortMode;
-let sortOrder = 1;
 let shownCountries = countries;
 
 
@@ -90,6 +86,9 @@ for (let i = 0; i < buttons.length; i++) {
         buttons[i].style.background = 'white';
     });
 };
+
+selectedButton.style.outline = `2px solid ${mediumHSL}`;
+console.log(selectedButton.id, selectedButton.className);
 
 countryCount.style.color = mediumHSL;
 
@@ -165,16 +164,17 @@ function filterCountries(array, search) {
 
 
 function changeSortMode(event) {
-    for (let i = 0; i < buttons.length; i++) {
-        buttons[i].className = '';
-        buttons[i].style.outline = 'none';
+    if (event.target.className != 'selected') {
+        for (let i = 0; i < buttons.length; i++) {
+            buttons[i].className = '';
+            buttons[i].style.outline = 'none';
+        };
+    
+        event.target.className = 'selected';
+    
+        selectedButton = document.querySelector('.selected');
+        selectedButton.style.outline = `2px solid ${mediumHSL}`;
     };
-
-    event.target.className = 'selected';
-
-    selectedButton = document.querySelector('.selected');
-    console.log(selectedButton.id, selectedButton.className);
-    selectedButton.style.outline = `2px solid ${mediumHSL}`;
 
     if (selectedButton.id[0] === '-') {
         selectedButton.id = selectedButton.id.substr(1);
@@ -182,11 +182,11 @@ function changeSortMode(event) {
 
     else {
         selectedButton.id = '-' + selectedButton.id;
-    }
+    };
 
     sortMode = selectedButton.id;
 
-    return true;
+    return sortMode;
 };
 
 
@@ -202,11 +202,22 @@ function sortCountries(array) {
         property = sortMode;
     };
 
-    function compare(a, b) {
-        if (a[property] > b[property]) {
-            return -1;
-        }
-    };
+    if (property === 'population') {
+        function compare(a, b) {
+            if (a[property] < b[property]) {
+                return -1;
+            }
+        };
+    }
+
+    else {
+        function compare(a, b) {
+            if (a[property] > b[property]) {
+                return -1;
+            }
+        };
+    }
+
 
     array.sort(compare);
 
