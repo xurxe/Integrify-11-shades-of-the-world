@@ -30,12 +30,10 @@ let mediumHSL = `hsl(${H}, ${S}%, ${mediumL}%)`
 let darkL = 5;
 let darkHSL = `hsl(${H}, ${S}%, ${darkL}%)`
 
-let byName = 1;
-let byCapital = 0;
-let byPopulation = 0;
-
 let sortMode = selectedButton.id;
-let shownCountries;
+let property = sortMode;
+let sortOrder = 1;
+let shownCountries = countries;
 
 
 
@@ -45,18 +43,22 @@ searchInput.style.border = `2px solid ${mediumHSL}`;
 
 searchInput.addEventListener('mouseover', function() {
     searchInput.style.background = 'white';
+    searchInput.style.color = mediumHSL;
 });
 
 searchInput.addEventListener('mouseout', function() {
     searchInput.style.background = mediumHSL;
+    searchInput.style.color = 'white';
 });
 
 searchInput.addEventListener('focus', function() {
     searchInput.style.background = 'white';
+    searchInput.style.color = mediumHSL;
 });
 
 searchInput.addEventListener('blur', function() {
     searchInput.style.background = mediumHSL;
+    searchInput.style.color = 'white';
 });
 
 for (let i = 0; i < buttons.length; i++) {
@@ -89,7 +91,7 @@ for (let i = 0; i < buttons.length; i++) {
     });
 };
 
-
+countryCount.style.color = mediumHSL;
 
 
 /* FUNCTIONS *************************************************************** */
@@ -113,6 +115,8 @@ function createCountryDivInnerHtml(object) {
     return countryDivInnerHtml;
 };
 
+
+
 function generateCountryDivColor() {
     const countryDivs = document.querySelectorAll('.country-div');
     for (i = 0; i < countryDivs.length; i++) {
@@ -122,7 +126,9 @@ function generateCountryDivColor() {
         countryDivs[i].style.background = hsl;
         countryDivs[i].style.color = darkHSL;
     }
-}
+
+    return true;
+};
 
 
 
@@ -138,6 +144,7 @@ function showCountries(array) {
 
     generateCountryDivColor();
 
+    return true;
 };
 
 
@@ -178,43 +185,45 @@ function changeSortMode(event) {
     }
 
     sortMode = selectedButton.id;
+
+    return true;
 };
 
 
 
-function sortCountries(array, property) {
-/*     property = `'${sortMode}'`;
- */    let sortOrder = 1;
+function sortCountries(array) {
+    if (sortMode[0] === '-') {
+        sortOrder = -1;
+        property = sortMode.substr(1);
+    }
+
+    else {
+        sortOrder = 1;
+        property = sortMode;
+    };
 
     function compare(a, b) {
-        if (a[property] < b[property]) {
+        if (a[property] > b[property]) {
             return -1;
         }
     };
-
-    if (property[0] === '-') {
-        sortOrder = -1;
-        property = property.substr(1);
-    }
 
     array.sort(compare);
 
     if (sortOrder === -1) {
         array.reverse();
     }
-
     console.log(property);
+
     return array;
 };
 
-sortCountries(countries, 'capital');
 
 
-
-function showFilteredCountries(event) {
+function showFilteredCountries() {
     countriesWrapper.innerHTML = '';
-    let searchTerm = event.target.value.toLowerCase();
-    shownCountries = showCountries(filterCountries(countries, searchTerm));
+    let searchTerm = searchInput.value.toLowerCase();
+    shownCountries = showCountries(sortCountries(filterCountries(countries, searchTerm)));
     return shownCountries;
 };
 
@@ -228,6 +237,11 @@ link.style.color = mediumHSL;
 countryCount.textContent = `showing ${countries.length} countries`;
 showCountries(countries);
 
-buttonsDiv.addEventListener('click', changeSortMode);
+buttonsDiv.addEventListener('click', function() {
+    changeSortMode(event);
+    showFilteredCountries();
+});
 
 searchInput.addEventListener('input', showFilteredCountries);
+
+console.log(shownCountries);
