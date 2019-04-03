@@ -1,10 +1,10 @@
 # Shades of the world
 
-Coming soon.
+A monochrome country search.
 
 ## Demo
 
-Coming soon.
+https://xurxe.github.io/Integrify-11-shades-of-the-world/
 
 ## Author
 
